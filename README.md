@@ -2,7 +2,13 @@
 
 An interactive Vietnamese educational game for children to learn math and time-telling skills through fun gameplay.
 
-## 🌟 Features
+## � Live Demo
+
+**[Play the game here!](https://luubinhan.github.io/jumi-math/)**
+
+The application is automatically deployed to GitHub Pages when changes are pushed to the `dev` branch.
+
+## �🌟 Features
 
 ### Math Adventure (Phiêu Lưu Toán Học)
 - Interactive math questions with progressive difficulty
@@ -89,6 +95,21 @@ npm run dev      # Start development server
 npm run build    # Build for production
 npm run preview  # Preview production build
 ```
+
+## 🚀 Deployment
+
+The project is configured for automatic deployment to GitHub Pages:
+
+- **Trigger**: Push to `dev` branch
+- **Action**: `.github/workflows/deploy.yml`
+- **Live URL**: https://luubinhan.github.io/jumi-math/
+
+### GitHub Pages Setup
+
+1. Go to your repository Settings → Pages
+2. Under "Build and deployment", select "GitHub Actions" as the source
+3. Add your `GEMINI_API_KEY` as a repository secret (Settings → Secrets and variables → Actions)
+4. Push to the `dev` branch to trigger deployment
 
 ## 🎮 How to Play
 
