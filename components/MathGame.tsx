@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
+import { getEncouragement } from '../services/geminiService';
 
 const generateMathQuestions = (): Question[] => {
   const qs: Question[] = [];
@@ -52,7 +53,7 @@ const generateMathQuestions = (): Question[] => {
     qs.push({
       id: i,
       problem,
-      solvedProblem, // New property for showing result
+      solvedProblem,
       answer: result,
       options: Array.from(optionsSet).sort((x, y) => x - y),
       type: GameType.MATH
@@ -71,6 +72,7 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     setQuestions(generateMathQuestions());
@@ -79,15 +81,18 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
   const handleAnswer = (answer: number) => {
     if (showResult) return;
     setSelectedAnswer(answer);
-    if (answer === questions[currentIndex].answer) {
+    const correct = answer === questions[currentIndex].answer;
+    if (correct) {
       setScore(prev => prev + 1);
     }
+    setFeedback(getEncouragement(correct));
     setShowResult(true);
   };
 
   const handleNext = () => {
     setShowResult(false);
     setSelectedAnswer(null);
+    setFeedback("");
     if (currentIndex < 9) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -106,6 +111,8 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
     );
   }
 
+  const isCorrect = selectedAnswer === currentQuestion.answer;
+
   return (
     <div className="flex flex-col items-center">
       <div className="w-full h-4 bg-slate-100 rounded-full mb-8 overflow-hidden border-2 border-slate-200">
@@ -115,8 +122,15 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
         ></div>
       </div>
 
-      <div className="text-center mb-8 h-32 flex flex-col justify-center">
-        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Câu {currentIndex + 1}/10</p>
+      <div className="text-center mb-4 h-40 flex flex-col justify-center">
+        <p className="text-slate-400 font-bold uppercase tracking-wider mb-1">Câu {currentIndex + 1}/10</p>
+        
+        {showResult && (
+          <p className={`font-kids text-2xl mb-2 animate-bounce ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+            {feedback}
+          </p>
+        )}
+        
         <h2 className={`font-kids transition-all duration-300 ${showResult ? 'text-6xl md:text-8xl text-blue-600' : 'text-5xl md:text-7xl text-slate-800'}`}>
           {showResult ? currentQuestion.solvedProblem : currentQuestion.problem}
         </h2>
@@ -124,12 +138,12 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
 
       <div className="grid grid-cols-2 gap-4 w-full mb-8">
         {currentQuestion.options.map((option: number, idx: number) => {
-          const isCorrect = option === currentQuestion.answer;
+          const isCorrectOption = option === currentQuestion.answer;
           const isSelected = option === selectedAnswer;
           
           let btnClass = "bg-slate-100 text-slate-700 border-slate-300";
           if (showResult) {
-            if (isCorrect) btnClass = "bg-green-500 text-white border-green-700 scale-105 z-10";
+            if (isCorrectOption) btnClass = "bg-green-500 text-white border-green-700 scale-105 z-10";
             else if (isSelected) btnClass = "bg-red-400 text-white border-red-600 opacity-70";
             else btnClass = "bg-slate-50 text-slate-300 border-slate-200 opacity-30";
           } else {
