@@ -145,10 +145,20 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
 
       <ClockFace hours={h} minutes={m} showResult={showResult} isCorrect={isCorrect} />
 
-      {showResult && (
+      {/* {showResult && (
         <p className={`font-kids text-2xl mb-2 animate-bounce ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
           {feedback}
         </p>
+      )} */}
+      {showResult && !isCorrect && (
+        <div className="w-16 h-16 mx-auto mb-3 rounded-full">
+          <img className="rounded-full" src="./assets/sad-dog.png" alt="" />
+        </div>
+      )}
+      {showResult && isCorrect && (
+        <div className="w-16 h-16 mx-auto mb-3rounded-full">
+          <img className="rounded-full" src="./assets/fun-dog.png" alt="" />
+        </div>
       )}
 
       <h2 className={`text-3xl font-kids mb-8 transition-colors ${showResult ? (isCorrect ? 'text-green-600' : 'text-red-500') : 'text-slate-800'}`}>
