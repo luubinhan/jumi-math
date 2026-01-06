@@ -14,17 +14,22 @@ const Layout: React.FC<LayoutProps> = ({ children, title, onBack }) => {
       <div className="absolute top-[-50px] left-[-50px] w-64 h-64 bg-blue-200 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
       <div className="absolute bottom-[-50px] right-[-50px] w-64 h-64 bg-pink-200 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
       
-      <header className="w-full max-w-2xl flex items-center justify-between mb-8 z-10">
-        <div className="flex items-center gap-4">
-          {onBack && (
-            <button 
-              onClick={onBack}
-              className="bg-white p-3 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 text-xl"
-            >
-              ⬅️
-            </button>
-          )}
-          <h1 className="font-kids text-3xl md:text-4xl text-blue-600 drop-shadow-sm">{title}</h1>
+      <header className="w-full max-w-2xl mb-8 z-10 relative">
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="absolute top-0 left-0 bg-white p-3 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 text-xl"
+          >
+            ⬅️
+          </button>
+        )}
+        <div className="flex items-center justify-center gap-4 w-full">
+          <div className="w-14 md:w-14" >
+            <img className="rounded-full" src="./assets/workout-dog.png" alt="Happy Kid" />
+          </div>
+          <h1 className="font-kids text-3xl md:text-4xl text-black-400 drop-shadow-sm">
+            {title}
+          </h1>
         </div>
       </header>
 
