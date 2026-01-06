@@ -19,18 +19,30 @@ const ClockFace: React.FC<{ hours: number; minutes: number; showResult?: boolean
           {i + 1}
         </div>
       ))}
-      <div className="absolute w-4 h-4 bg-slate-800 rounded-full z-30"></div>
+      
+      {/* Kim Giờ */}
       <div 
-        className="absolute w-2.5 h-16 md:h-20 bg-slate-800 rounded-full origin-bottom z-10"
-        style={{ transform: `rotate(${hourDeg}deg) translateY(-50%)` }}
-      ></div>
-      <div 
-        className="absolute w-1.5 h-24 md:h-32 bg-red-500 rounded-full origin-bottom z-20"
-        style={{ transform: `rotate(${minuteDeg}deg) translateY(-50%)` }}
+        className="absolute bottom-1/2 left-1/2 w-2.5 h-16 md:h-20 bg-slate-800 rounded-full origin-bottom z-10"
+        style={{ 
+          transform: `translateX(-50%) rotate(${hourDeg}deg)`,
+          marginBottom: '0px' 
+        }}
       ></div>
       
+      {/* Kim Phút */}
+      <div 
+        className="absolute bottom-1/2 left-1/2 w-1.5 h-24 md:h-32 bg-red-500 rounded-full origin-bottom z-20"
+        style={{ 
+          transform: `translateX(-50%) rotate(${minuteDeg}deg)`,
+          marginBottom: '0px'
+        }}
+      ></div>
+
+      {/* Chốt Giữa Đồng Hồ */}
+      <div className="absolute w-5 h-5 bg-slate-800 rounded-full z-30 shadow-sm"></div>
+      
       {showResult && (
-        <div className="absolute top-[-20px] right-[-20px] text-6xl animate-bounce">
+        <div className="absolute top-[-20px] right-[-20px] text-6xl animate-bounce z-40">
           {isCorrect ? '✅' : '❌'}
         </div>
       )}

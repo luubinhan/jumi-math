@@ -107,16 +107,6 @@ const App: React.FC = () => {
               <div className="absolute right-[-20px] bottom-[-20px] opacity-10 text-9xl group-hover:scale-110 transition-transform">⏰</div>
             </button>
           </div>
-
-          <div className="mt-8 p-6 bg-yellow-100/50 rounded-3xl border-2 border-dashed border-yellow-400">
-            <h4 className="font-kids text-yellow-700 mb-2">Ghi chú cho Ba Mẹ:</h4>
-            <ul className="text-slate-600 text-sm list-disc pl-4 space-y-1">
-              <li>Độ khó sẽ tăng dần sau mỗi 3-4 câu hỏi.</li>
-              <li>Bạn nhỏ sẽ được cổ vũ bởi AI sau mỗi câu trả lời.</li>
-              <li>Hình ảnh trực quan, sinh động giúp bé dễ tiếp thu.</li>
-              <li>Môi trường an toàn: Không có số âm, không áp lực thời gian!</li>
-            </ul>
-          </div>
         </div>
       )}
     </Layout>
