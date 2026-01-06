@@ -6,7 +6,7 @@ An interactive Vietnamese educational game for children to learn math and time-t
 
 **[Play the game here!](https://luubinhan.github.io/jumi-math/)**
 
-The application is automatically deployed to GitHub Pages when changes are pushed to the `dev` branch.
+The application is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
 ## �🌟 Features
 
@@ -100,7 +100,7 @@ npm run preview  # Preview production build
 
 The project is configured for automatic deployment to GitHub Pages:
 
-- **Trigger**: Push to `dev` branch
+- **Trigger**: Push to `main` branch
 - **Action**: `.github/workflows/deploy.yml`
 - **Live URL**: https://luubinhan.github.io/jumi-math/
 
@@ -109,7 +109,18 @@ The project is configured for automatic deployment to GitHub Pages:
 1. Go to your repository Settings → Pages
 2. Under "Build and deployment", select "GitHub Actions" as the source
 3. Add your `GEMINI_API_KEY` as a repository secret (Settings → Secrets and variables → Actions)
-4. Push to the `dev` branch to trigger deployment
+4. Push to the `main` branch to trigger deployment
+
+### Development Workflow
+
+1. Develop and test on the `dev` branch
+2. When ready to deploy, merge `dev` into `main`:
+   ```bash
+   git checkout main
+   git merge dev
+   git push origin main
+   ```
+3. The deployment will trigger automatically
 
 ## 🎮 How to Play
 
