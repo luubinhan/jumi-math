@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
 import { getEncouragement } from '../services/geminiService';
+import sadDog from '../assets/sad-dog.png';
+import funDog from '../assets/fun-dog.png';
 
 const ClockFace: React.FC<{ hours: number; minutes: number; showResult?: boolean; isCorrect?: boolean }> = ({ hours, minutes, showResult, isCorrect }) => {
   const hourDeg = (hours % 12) * 30 + minutes * 0.5;
@@ -152,12 +154,12 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
       )} */}
       {showResult && !isCorrect && (
         <div className="w-16 h-16 mx-auto mb-3 rounded-full">
-          <img className="rounded-full" src="./assets/sad-dog.png" alt="" />
+          <img className="rounded-full" src={sadDog} alt="" />
         </div>
       )}
       {showResult && isCorrect && (
         <div className="w-16 h-16 mx-auto mb-3rounded-full">
-          <img className="rounded-full" src="./assets/fun-dog.png" alt="" />
+          <img className="rounded-full" src={funDog} alt="" />
         </div>
       )}
 

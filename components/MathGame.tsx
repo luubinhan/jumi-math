@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
 import { getEncouragement } from '../services/geminiService';
+import sadDog from '../assets/sad-dog.png';
+import funDog from '../assets/fun-dog.png';
 
 const generateMathQuestions = (): Question[] => {
   const qs: Question[] = [];
@@ -132,12 +134,12 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
         )} */}
         {showResult && !isCorrect && (
           <div className="w-16 h-16 mx-auto mb-3 animate-bounce rounded-full">
-            <img className="rounded-full" src="./assets/sad-dog.png" alt="" />
+            <img className="rounded-full" src={sadDog} alt="" />
           </div>
         )}
         {showResult && isCorrect && (
           <div className="w-16 h-16 mx-auto mb-3 animate-bounce rounded-full">
-            <img className="rounded-full" src="./assets/fun-dog.png" alt="" />
+            <img className="rounded-full" src={funDog} alt="" />
           </div>
         )}
         

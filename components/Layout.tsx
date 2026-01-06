@@ -1,5 +1,6 @@
 
 import React from 'react';
+import workoutDog from '../assets/workout-dog.png';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, onBack }) => {
         )}
         <div className="flex items-center justify-center gap-4 w-full">
           <div className="w-14 md:w-14" >
-            <img className="rounded-full" src="./assets/workout-dog.png" alt="Happy Kid" />
+            <img className="rounded-full" src={workoutDog} alt="Happy Kid" />
           </div>
           <h1 className="font-kids text-3xl md:text-4xl text-black-400 drop-shadow-sm">
             {title}
