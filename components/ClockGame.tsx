@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
+import { getEncouragement } from '../services/geminiService';
 
 const ClockFace: React.FC<{ hours: number; minutes: number; showResult?: boolean; isCorrect?: boolean }> = ({ hours, minutes, showResult, isCorrect }) => {
   const hourDeg = (hours % 12) * 30 + minutes * 0.5;
@@ -89,6 +90,7 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     setQuestions(generateClockQuestions());
@@ -97,15 +99,18 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
   const handleAnswer = (answer: string) => {
     if (showResult) return;
     setSelectedAnswer(answer);
-    if (answer === questions[currentIndex].answer) {
+    const correct = answer === questions[currentIndex].answer;
+    if (correct) {
       setScore(prev => prev + 1);
     }
+    setFeedback(getEncouragement(correct));
     setShowResult(true);
   };
 
   const handleNext = () => {
     setShowResult(false);
     setSelectedAnswer(null);
+    setFeedback("");
     if (currentIndex < 9) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -139,6 +144,12 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
       </div>
 
       <ClockFace hours={h} minutes={m} showResult={showResult} isCorrect={isCorrect} />
+
+      {showResult && (
+        <p className={`font-kids text-2xl mb-2 animate-bounce ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+          {feedback}
+        </p>
+      )}
 
       <h2 className={`text-3xl font-kids mb-8 transition-colors ${showResult ? (isCorrect ? 'text-green-600' : 'text-red-500') : 'text-slate-800'}`}>
         {showResult ? (isCorrect ? `Đúng rồi: ${currentQuestion.answer}` : `Đáp án đúng: ${currentQuestion.answer}`) : currentQuestion.problem}
