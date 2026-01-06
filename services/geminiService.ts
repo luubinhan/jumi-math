@@ -7,19 +7,20 @@ export const getEncouragement = async (isCorrect: boolean, score: number): Promi
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `You are a friendly cartoon star buddy for a kid's math app. 
-      The child just answered a question ${isCorrect ? 'correctly' : 'incorrectly'}. 
-      Their current score is ${score}/10. 
-      Give a very short, cheerful, and encouraging sentence (max 10 words) using simple words for a 6-year-old. 
-      Use emojis.`,
+      contents: `Bạn là một người bạn ngôi sao hoạt hình cực kỳ thân thiện trong ứng dụng toán học cho trẻ em. 
+      Em bé vừa trả lời ${isCorrect ? 'đúng' : 'sai'} một câu hỏi. 
+      Điểm hiện tại của bé là ${score}/10. 
+      Hãy đưa ra một câu cổ vũ cực kỳ ngắn gọn, vui tươi bằng TIẾNG VIỆT (tối đa 10 từ). 
+      Sử dụng ngôn ngữ phù hợp với trẻ 6 tuổi (ví dụ: "Giỏi quá", "Cố lên nào", "Bạn làm được mà"). 
+      Thêm các biểu tượng cảm xúc đáng yêu.`,
       config: {
         temperature: 0.9,
       }
     });
-    return response.text || (isCorrect ? "Great job! 🌟" : "Don't worry, try again! 🌈");
+    return response.text || (isCorrect ? "Giỏi quá đi! 🌟" : "Đừng buồn, thử lại nhé! 🌈");
   } catch (error) {
     console.error("Gemini Error:", error);
-    return isCorrect ? "Awesome work! ⭐" : "You can do it! 🎈";
+    return isCorrect ? "Tuyệt vời ông mặt trời! ⭐" : "Bạn nhỏ làm được mà! 🎈";
   }
 };
 
@@ -27,13 +28,13 @@ export const getEducationalNote = async (topic: string): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `Explain ${topic} to a 7-year-old in two simple, fun sentences. Use an analogy.`,
+      contents: `Giải thích về ${topic} cho trẻ 7 tuổi bằng TIẾNG VIỆT trong 2 câu đơn giản, thú vị. Hãy dùng hình ảnh so sánh.`,
       config: {
         temperature: 0.7,
       }
     });
-    return response.text || "Learning is like a super power! Keep going.";
+    return response.text || "Học tập là một siêu năng lực đấy! Tiếp tục nào.";
   } catch (error) {
-    return "You're getting smarter every second!";
+    return "Bạn đang thông minh hơn mỗi giây đấy!";
   }
 };

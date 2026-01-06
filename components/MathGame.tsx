@@ -9,7 +9,7 @@ const generateMathQuestions = (): Question[] => {
     const isAddition = Math.random() > 0.4;
     let a, b, result;
 
-    if (i < 3) { // Easy
+    if (i < 3) { // Dễ
       if (isAddition) {
         a = Math.floor(Math.random() * 6);
         b = Math.floor(Math.random() * 6);
@@ -19,7 +19,7 @@ const generateMathQuestions = (): Question[] => {
         b = Math.floor(Math.random() * (a + 1));
         result = a - b;
       }
-    } else if (i < 7) { // Medium
+    } else if (i < 7) { // Trung bình
       if (isAddition) {
         a = Math.floor(Math.random() * 10) + 1;
         b = Math.floor(Math.random() * 10);
@@ -29,7 +29,7 @@ const generateMathQuestions = (): Question[] => {
         b = Math.floor(Math.random() * (a - 1)) + 1;
         result = a - b;
       }
-    } else { // Hard (up to 20)
+    } else { // Khó (lên đến 20)
       if (isAddition) {
         a = Math.floor(Math.random() * 11) + 5;
         b = Math.floor(Math.random() * (21 - a));
@@ -109,7 +109,7 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
     return (
       <div className="flex flex-col items-center justify-center p-10 space-y-4">
         <div className="animate-spin text-5xl">🌟</div>
-        <p className="font-kids text-xl text-slate-500">Loading Adventure...</p>
+        <p className="font-kids text-xl text-slate-500">Đang chuẩn bị thử thách...</p>
       </div>
     );
   }
@@ -124,7 +124,7 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
       </div>
 
       <div className="text-center mb-10">
-        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Question {currentIndex + 1} of 10</p>
+        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Câu hỏi {currentIndex + 1} trên 10</p>
         <h2 className="text-5xl md:text-7xl font-kids text-slate-800 animate-bounce-slow">
           {currentQuestion.problem}
         </h2>
@@ -157,7 +157,7 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
             ${isCorrect ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}
           `}>
             <p className="text-2xl font-kids text-slate-800">
-              {feedback || (isCorrect ? "Great Job! 🌟" : "Keep Trying! 🌈")}
+              {feedback || (isCorrect ? "Tuyệt vời! 🌟" : "Cố lên nào! 🌈")}
             </p>
           </div>
         </div>

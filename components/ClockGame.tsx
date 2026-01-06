@@ -58,7 +58,7 @@ const generateClockQuestions = (): Question[] => {
 
     qs.push({
       id: i,
-      problem: `What time is it?`,
+      problem: `Bây giờ là mấy giờ nhỉ?`,
       answer: timeString,
       options: Array.from(optionsSet).sort(),
       type: GameType.CLOCK
@@ -113,7 +113,7 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
     return (
       <div className="flex flex-col items-center justify-center p-10 space-y-4">
         <div className="animate-spin text-5xl">⏰</div>
-        <p className="font-kids text-xl text-slate-500">Setting Clocks...</p>
+        <p className="font-kids text-xl text-slate-500">Đang chỉnh đồng hồ...</p>
       </div>
     );
   }
@@ -131,7 +131,7 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
         ></div>
       </div>
 
-      <p className="text-slate-400 font-bold uppercase mb-4">Clock Quest: Level {currentIndex + 1}</p>
+      <p className="text-slate-400 font-bold uppercase mb-4">Thử thách đồng hồ: Câu {currentIndex + 1}</p>
       
       <ClockFace hours={h} minutes={m} />
 
@@ -164,7 +164,7 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
             ${isCorrect ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}
           `}>
             <p className="text-2xl font-kids text-slate-800">
-              {feedback || (isCorrect ? "Correct! 🕒" : "Try Again! 🌈")}
+              {feedback || (isCorrect ? "Đúng rồi! 🕒" : "Thử lại nhé! 🌈")}
             </p>
           </div>
         </div>

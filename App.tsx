@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   if (currentGame === GameType.MATH) {
     return (
-      <Layout title="Math Adventure" onBack={goHome}>
+      <Layout title="Phiêu Lưu Toán Học" onBack={goHome}>
         <MathGame onFinish={handleFinish} />
       </Layout>
     );
@@ -41,27 +41,27 @@ const App: React.FC = () => {
 
   if (currentGame === GameType.CLOCK) {
     return (
-      <Layout title="Time Master" onBack={goHome}>
+      <Layout title="Bậc Thầy Thời Gian" onBack={goHome}>
         <ClockGame onFinish={handleFinish} />
       </Layout>
     );
   }
 
   return (
-    <Layout title="Math Explorer">
+    <Layout title="Toán Học Nhí">
       {showSuccess ? (
         <div className="text-center animate-in fade-in slide-in-from-bottom duration-700">
           <div className="text-8xl mb-6">🏆</div>
-          <h2 className="text-4xl font-kids text-blue-600 mb-2">Amazing Job!</h2>
+          <h2 className="text-4xl font-kids text-blue-600 mb-2">Làm Tốt Lắm!</h2>
           <p className="text-xl text-slate-600 mb-8">
-            You got <span className="text-3xl font-kids text-green-500">{lastScore}</span> out of 10 stars! 🌟
+            Bạn nhỏ đã nhận được <span className="text-3xl font-kids text-green-500">{lastScore}</span> ngôi sao lấp lánh! 🌟
           </p>
           <div className="flex flex-col gap-4">
             <button 
               onClick={goHome}
               className="w-full bg-blue-500 text-white font-kids text-2xl py-6 rounded-[2rem] border-b-8 border-blue-700 hover:-translate-y-1 transition-all active:scale-95"
             >
-              Play Again! 🎢
+              Chơi Lại Thôi! 🎢
             </button>
             <div className="grid grid-cols-5 gap-2 mt-4">
               {[...Array(10)].map((_, i) => (
@@ -78,8 +78,8 @@ const App: React.FC = () => {
       ) : (
         <div className="flex flex-col gap-8">
           <div className="text-center mb-4">
-            <p className="text-slate-600 text-xl font-medium">Hello, Explorer! 👋</p>
-            <h2 className="text-2xl font-kids text-slate-800">What would you like to learn today?</h2>
+            <p className="text-slate-600 text-xl font-medium">Chào bạn nhỏ! 👋</p>
+            <h2 className="text-2xl font-kids text-slate-800">Hôm nay chúng mình học gì nhỉ?</h2>
           </div>
 
           <div className="grid gap-6">
@@ -89,8 +89,8 @@ const App: React.FC = () => {
             >
               <div className="bg-orange-400 text-white text-5xl p-6 rounded-3xl shadow-lg">➕</div>
               <div className="text-left">
-                <h3 className="font-kids text-3xl text-orange-600">Math Master</h3>
-                <p className="text-slate-600 font-medium">Add & Subtract up to 20!</p>
+                <h3 className="font-kids text-3xl text-orange-600">Siêu Nhân Toán Học</h3>
+                <p className="text-slate-600 font-medium">Cộng & Trừ trong phạm vi 20!</p>
               </div>
               <div className="absolute right-[-20px] bottom-[-20px] opacity-10 text-9xl group-hover:scale-110 transition-transform">🔢</div>
             </button>
@@ -101,20 +101,20 @@ const App: React.FC = () => {
             >
               <div className="bg-blue-400 text-white text-5xl p-6 rounded-3xl shadow-lg">🕒</div>
               <div className="text-left">
-                <h3 className="font-kids text-3xl text-blue-600">Time Traveler</h3>
-                <p className="text-slate-600 font-medium">Learn to read analog clocks!</p>
+                <h3 className="font-kids text-3xl text-blue-600">Nhà Du Hành Thời Gian</h3>
+                <p className="text-slate-600 font-medium">Học cách xem đồng hồ kim!</p>
               </div>
               <div className="absolute right-[-20px] bottom-[-20px] opacity-10 text-9xl group-hover:scale-110 transition-transform">⏰</div>
             </button>
           </div>
 
           <div className="mt-8 p-6 bg-yellow-100/50 rounded-3xl border-2 border-dashed border-yellow-400">
-            <h4 className="font-kids text-yellow-700 mb-2">Teacher's Strategy Note:</h4>
+            <h4 className="font-kids text-yellow-700 mb-2">Ghi chú cho Ba Mẹ:</h4>
             <ul className="text-slate-600 text-sm list-disc pl-4 space-y-1">
-              <li>Difficulty increases every 3-4 questions automatically.</li>
-              <li>AI-powered encouragement adapts to your performance.</li>
-              <li>Visual-first learning with immediate tactile feedback.</li>
-              <li>Safe environment: No negative numbers, no timers!</li>
+              <li>Độ khó sẽ tăng dần sau mỗi 3-4 câu hỏi.</li>
+              <li>Bạn nhỏ sẽ được cổ vũ bởi AI sau mỗi câu trả lời.</li>
+              <li>Hình ảnh trực quan, sinh động giúp bé dễ tiếp thu.</li>
+              <li>Môi trường an toàn: Không có số âm, không áp lực thời gian!</li>
             </ul>
           </div>
         </div>
