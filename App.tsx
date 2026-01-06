@@ -1,14 +1,22 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameType } from './types';
 import Layout from './components/Layout';
 import MathGame from './components/MathGame';
 import ClockGame from './components/ClockGame';
+import successSound from './assets/level-up-04.mp3';
 
 const App: React.FC = () => {
   const [currentGame, setCurrentGame] = useState<GameType>(GameType.NONE);
   const [showSuccess, setShowSuccess] = useState(false);
   const [lastScore, setLastScore] = useState(0);
+
+  useEffect(() => {
+    if (showSuccess) {
+      const audio = new Audio(successSound);
+      audio.play().catch(err => console.log('Audio play failed:', err));
+    }
+  }, [showSuccess]);
 
   const startMath = () => {
     setCurrentGame(GameType.MATH);
@@ -56,6 +64,16 @@ const App: React.FC = () => {
           <p className="text-xl text-slate-600 mb-8">
             Bạn nhỏ đã nhận được <span className="text-3xl font-kids text-green-500">{lastScore}</span> ngôi sao lấp lánh! 🌟
           </p>
+          <div className="grid grid-cols-10 gap-2 mt-4 mb-8">
+            {[...Array(10)].map((_, i) => (
+              <div 
+                key={i} 
+                className={`text-2xl ${i < lastScore ? 'opacity-100' : 'opacity-20 grayscale'}`}
+              >
+                ⭐
+              </div>
+            ))}
+          </div>
           <div className="flex flex-col gap-4">
             <button 
               onClick={goHome}
@@ -63,16 +81,7 @@ const App: React.FC = () => {
             >
               Chơi Lại Thôi! 🎢
             </button>
-            <div className="grid grid-cols-5 gap-2 mt-4">
-              {[...Array(10)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`text-2xl ${i < lastScore ? 'opacity-100' : 'opacity-20 grayscale'}`}
-                >
-                  ⭐
-                </div>
-              ))}
-            </div>
+            
           </div>
         </div>
       ) : (

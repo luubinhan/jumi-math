@@ -4,6 +4,8 @@ import { Question, GameType } from '../types';
 import { getEncouragement } from '../services/geminiService';
 import sadDog from '../assets/sad-dog.png';
 import funDog from '../assets/fun-dog.png';
+import happySound from '../assets/happy-message-ping.mp3';
+import incorrectSound from '../assets/sonar-ping.mp3';
 
 const ClockFace: React.FC<{ hours: number; minutes: number; showResult?: boolean; isCorrect?: boolean }> = ({ hours, minutes, showResult, isCorrect }) => {
   const hourDeg = (hours % 12) * 30 + minutes * 0.5;
@@ -97,6 +99,14 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
   useEffect(() => {
     setQuestions(generateClockQuestions());
   }, []);
+
+  useEffect(() => {
+    if (showResult && selectedAnswer !== null) {
+      const isCorrect = selectedAnswer === questions[currentIndex].answer;
+      const audio = new Audio(isCorrect ? happySound : incorrectSound);
+      audio.play().catch(err => console.log('Audio play failed:', err));
+    }
+  }, [showResult, selectedAnswer, questions, currentIndex]);
 
   const handleAnswer = (answer: string) => {
     if (showResult) return;

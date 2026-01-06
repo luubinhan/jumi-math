@@ -4,6 +4,8 @@ import { Question, GameType } from '../types';
 import { getEncouragement } from '../services/geminiService';
 import sadDog from '../assets/sad-dog.png';
 import funDog from '../assets/fun-dog.png';
+import happySound from '../assets/happy-message-ping.mp3';
+import incorrectSound from '../assets/sonar-ping.mp3';
 
 const generateMathQuestions = (): Question[] => {
   const qs: Question[] = [];
@@ -79,6 +81,14 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
   useEffect(() => {
     setQuestions(generateMathQuestions());
   }, []);
+
+  useEffect(() => {
+    if (showResult && selectedAnswer !== null) {
+      const isCorrect = selectedAnswer === questions[currentIndex].answer;
+      const audio = new Audio(isCorrect ? happySound : incorrectSound);
+      audio.play().catch(err => console.log('Audio play failed:', err));
+    }
+  }, [showResult, selectedAnswer, questions, currentIndex]);
 
   const handleAnswer = (answer: number) => {
     if (showResult) return;
