@@ -78,8 +78,10 @@ const App: React.FC = () => {
       ) : (
         <div className="flex flex-col gap-8">
           <div className="text-center mb-4">
-            <p className="text-slate-600 text-xl font-medium">Chào bạn nhỏ! 👋</p>
-            <h2 className="text-2xl font-kids text-slate-800">Hôm nay chúng mình học gì nhỉ?</h2>
+            {/* <p className="text-slate-600 text-xl font-medium">Chào bạn nhỏ! 👋</p> */}
+            <div className="mx-auto w-24 md:w-24" >
+              <img className="rounded-full" src="./assets/workout-dog.png" alt="Happy Kid" />
+            </div>
           </div>
 
           <div className="grid gap-6">

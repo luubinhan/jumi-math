@@ -123,12 +123,22 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
       </div>
 
       <div className="text-center mb-4 h-40 flex flex-col justify-center">
-        <p className="text-slate-400 font-bold uppercase tracking-wider mb-1">Câu {currentIndex + 1}/10</p>
+        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Câu {currentIndex + 1}/10</p>
         
-        {showResult && (
+        {/* {showResult && (
           <p className={`font-kids text-2xl mb-2 animate-bounce ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
             {feedback}
           </p>
+        )} */}
+        {showResult && !isCorrect && (
+          <div className="w-16 h-16 mx-auto mb-3 animate-bounce rounded-full">
+            <img className="rounded-full" src="./assets/sad-dog.png" alt="" />
+          </div>
+        )}
+        {showResult && isCorrect && (
+          <div className="w-16 h-16 mx-auto mb-3 animate-bounce rounded-full">
+            <img className="rounded-full" src="./assets/fun-dog.png" alt="" />
+          </div>
         )}
         
         <h2 className={`font-kids transition-all duration-300 ${showResult ? 'text-6xl md:text-8xl text-blue-600' : 'text-5xl md:text-7xl text-slate-800'}`}>
