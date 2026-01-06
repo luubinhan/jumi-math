@@ -60,7 +60,7 @@ All user-facing text in Vietnamese. Key terms:
 - "Siêu Nhân Toán Học" (Math Superhero)
 - "Bậc Thầy Thời Gian" (Time Master)
 - "Làm Tốt Lắm!" (Well done!)
-- Encouragement messages in `geminiService.ts` (currently static arrays, named for potential AI integration)
+- Random encouragement messages: "GIỎI QUÁ!", "ĐÚNG RỒI!", "CỐ LÊN NÀO!", etc.
 
 ## Build & Deploy
 
@@ -74,7 +74,6 @@ npm run preview  # Test production build locally
 ### Deployment Configuration
 - **Base path**: `/jumi-math/` set in `vite.config.ts` for GitHub Pages
 - **Auto-deploy**: GitHub Actions on push to `dev` branch
-- **Environment**: `GEMINI_API_KEY` injected via `define` (prepared for future AI features)
 
 ### Path Alias
 `@` resolves to project root (`vite.config.ts` alias). Use absolute imports for clarity.
@@ -103,7 +102,7 @@ while (optionsSet.size < 4) {
 ```
 
 ### Feedback System
-Use `getEncouragement()` from geminiService for random Vietnamese encouragement. Always show visual feedback (emoji + animated dog image) alongside text.
+Random Vietnamese encouragement messages (see `services/geminiService.ts`). Always show visual feedback (emoji + animated dog image) alongside text.
 
 ## Common Gotchas
 - Don't forget `base: '/jumi-math/'` when testing production builds
