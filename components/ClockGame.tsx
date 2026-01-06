@@ -1,14 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
-import { getEncouragement } from '../services/geminiService';
 
-const ClockFace: React.FC<{ hours: number; minutes: number }> = ({ hours, minutes }) => {
+const ClockFace: React.FC<{ hours: number; minutes: number; showResult?: boolean; isCorrect?: boolean }> = ({ hours, minutes, showResult, isCorrect }) => {
   const hourDeg = (hours % 12) * 30 + minutes * 0.5;
   const minuteDeg = minutes * 6;
 
   return (
-    <div className="relative w-64 h-64 md:w-80 md:h-80 bg-white rounded-full border-[12px] border-blue-500 shadow-xl mx-auto flex items-center justify-center mb-8">
+    <div className={`relative w-64 h-64 md:w-80 md:h-80 bg-white rounded-full border-[12px] shadow-xl mx-auto flex items-center justify-center mb-8 transition-colors duration-300 ${showResult ? (isCorrect ? 'border-green-500' : 'border-red-500') : 'border-blue-500'}`}>
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
@@ -29,6 +28,12 @@ const ClockFace: React.FC<{ hours: number; minutes: number }> = ({ hours, minute
         className="absolute w-1.5 h-24 md:h-32 bg-red-500 rounded-full origin-bottom z-20"
         style={{ transform: `rotate(${minuteDeg}deg) translateY(-50%)` }}
       ></div>
+      
+      {showResult && (
+        <div className="absolute top-[-20px] right-[-20px] text-6xl animate-bounce">
+          {isCorrect ? '✅' : '❌'}
+        </div>
+      )}
     </div>
   );
 };
@@ -39,14 +44,9 @@ const generateClockQuestions = (): Question[] => {
     let h = Math.floor(Math.random() * 12) + 1;
     let m = 0;
 
-    if (i < 4) {
-      m = 0;
-    } else if (i < 7) {
-      m = Math.random() > 0.5 ? 30 : 0;
-    } else {
-      const options = [0, 15, 30, 45];
-      m = options[Math.floor(Math.random() * options.length)];
-    }
+    if (i < 4) m = 0;
+    else if (i < 7) m = Math.random() > 0.5 ? 30 : 0;
+    else m = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
 
     const timeString = `${h}:${m === 0 ? '00' : m}`;
     const optionsSet = new Set<string>([timeString]);
@@ -58,7 +58,7 @@ const generateClockQuestions = (): Question[] => {
 
     qs.push({
       id: i,
-      problem: `Bây giờ là mấy giờ nhỉ?`,
+      problem: `Mấy giờ rồi nhỉ?`,
       answer: timeString,
       options: Array.from(optionsSet).sort(),
       type: GameType.CLOCK
@@ -75,45 +75,39 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [feedback, setFeedback] = useState<string>('');
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   useEffect(() => {
     setQuestions(generateClockQuestions());
   }, []);
 
-  const handleAnswer = async (answer: string) => {
-    if (showFeedback) return;
-    const currentQ = questions[currentIndex];
-    if (!currentQ) return;
+  const handleAnswer = (answer: string) => {
+    if (showResult) return;
+    setSelectedAnswer(answer);
+    if (answer === questions[currentIndex].answer) {
+      setScore(prev => prev + 1);
+    }
+    setShowResult(true);
+  };
 
-    const correct = answer === currentQ.answer;
-    
-    setIsCorrect(correct);
-    if (correct) setScore(prev => prev + 1);
-
-    setShowFeedback(true);
-    const msg = await getEncouragement(correct, score + (correct ? 1 : 0));
-    setFeedback(msg);
-
-    setTimeout(() => {
-      setShowFeedback(false);
-      if (currentIndex < 9) {
-        setCurrentIndex(prev => prev + 1);
-      } else {
-        onFinish(score + (correct ? 1 : 0));
-      }
-    }, 2000);
+  const handleNext = () => {
+    setShowResult(false);
+    setSelectedAnswer(null);
+    if (currentIndex < 9) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      onFinish(score);
+    }
   };
 
   const currentQuestion = questions[currentIndex];
 
   if (questions.length === 0 || !currentQuestion) {
     return (
-      <div className="flex flex-col items-center justify-center p-10 space-y-4">
+      <div className="flex flex-col items-center justify-center p-10 space-y-4 text-center">
         <div className="animate-spin text-5xl">⏰</div>
-        <p className="font-kids text-xl text-slate-500">Đang chỉnh đồng hồ...</p>
+        <p className="font-kids text-xl text-slate-500">Đang chuẩn bị...</p>
       </div>
     );
   }
@@ -121,6 +115,7 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
   const [hStr, mStr] = (currentQuestion.answer as string).split(':');
   const h = parseInt(hStr);
   const m = parseInt(mStr);
+  const isCorrect = selectedAnswer === currentQuestion.answer;
 
   return (
     <div className="flex flex-col items-center">
@@ -131,44 +126,52 @@ const ClockGame: React.FC<ClockGameProps> = ({ onFinish }) => {
         ></div>
       </div>
 
-      <p className="text-slate-400 font-bold uppercase mb-4">Thử thách đồng hồ: Câu {currentIndex + 1}</p>
-      
-      <ClockFace hours={h} minutes={m} />
+      <ClockFace hours={h} minutes={m} showResult={showResult} isCorrect={isCorrect} />
 
-      <h2 className="text-3xl font-kids text-slate-800 mb-8">{currentQuestion.problem}</h2>
+      <h2 className={`text-3xl font-kids mb-8 transition-colors ${showResult ? (isCorrect ? 'text-green-600' : 'text-red-500') : 'text-slate-800'}`}>
+        {showResult ? (isCorrect ? `Đúng rồi: ${currentQuestion.answer}` : `Đáp án đúng: ${currentQuestion.answer}`) : currentQuestion.problem}
+      </h2>
 
-      <div className="grid grid-cols-2 gap-4 w-full">
-        {currentQuestion.options.map((option, idx) => (
-          <button
-            key={idx}
-            disabled={showFeedback}
-            onClick={() => handleAnswer(option as string)}
-            className={`
-              h-20 text-3xl font-kids rounded-3xl transition-all active:scale-95 border-b-8
-              ${showFeedback ? 'opacity-50' : 'hover:-translate-y-1'}
-              ${idx === 0 ? 'bg-yellow-400 text-white border-yellow-600' : ''}
-              ${idx === 1 ? 'bg-green-400 text-white border-green-600' : ''}
-              ${idx === 2 ? 'bg-red-400 text-white border-red-600' : ''}
-              ${idx === 3 ? 'bg-sky-400 text-white border-sky-600' : ''}
-            `}
-          >
-            {option}
-          </button>
-        ))}
+      <div className="grid grid-cols-2 gap-4 w-full mb-8">
+        {currentQuestion.options.map((option: string, idx: number) => {
+          const isCorrectOption = option === currentQuestion.answer;
+          const isSelected = option === selectedAnswer;
+
+          let btnClass = "bg-slate-100 text-slate-700 border-slate-300";
+          if (showResult) {
+            if (isCorrectOption) btnClass = "bg-green-500 text-white border-green-700 scale-105 z-10";
+            else if (isSelected) btnClass = "bg-red-400 text-white border-red-600 opacity-70";
+            else btnClass = "bg-slate-50 text-slate-300 border-slate-200 opacity-30";
+          } else {
+            const colors = ['bg-yellow-400 border-yellow-600', 'bg-green-400 border-green-600', 'bg-red-400 border-red-600', 'bg-sky-400 border-sky-600'];
+            btnClass = `${colors[idx % colors.length]} text-white`;
+          }
+
+          return (
+            <button
+              key={idx}
+              disabled={showResult}
+              onClick={() => handleAnswer(option)}
+              className={`
+                h-20 text-3xl font-kids rounded-3xl transition-all border-b-8
+                ${!showResult ? 'hover:-translate-y-1 active:scale-95' : ''}
+                ${btnClass}
+              `}
+            >
+              {option}
+            </button>
+          );
+        })}
       </div>
 
-      {showFeedback && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50 animate-in fade-in zoom-in duration-300">
-          <div className={`
-            p-10 rounded-full text-center max-w-xs shadow-2xl border-4
-            ${isCorrect ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}
-          `}>
-            <p className="text-2xl font-kids text-slate-800">
-              {feedback || (isCorrect ? "Đúng rồi! 🕒" : "Thử lại nhé! 🌈")}
-            </p>
-          </div>
-        </div>
-      )}
+      <div className={`h-24 flex items-center justify-center transition-all duration-300 ${showResult ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'}`}>
+        <button
+          onClick={handleNext}
+          className="w-24 h-24 bg-blue-500 hover:bg-blue-400 text-white rounded-full flex items-center justify-center text-5xl shadow-xl border-b-8 border-blue-700 active:scale-95 transition-all"
+        >
+          ➔
+        </button>
+      </div>
     </div>
   );
 };

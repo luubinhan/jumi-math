@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question, GameType } from '../types';
-import { getEncouragement } from '../services/geminiService';
 
 const generateMathQuestions = (): Question[] => {
   const qs: Question[] = [];
@@ -9,7 +8,7 @@ const generateMathQuestions = (): Question[] => {
     const isAddition = Math.random() > 0.4;
     let a, b, result;
 
-    if (i < 3) { // Dễ
+    if (i < 3) {
       if (isAddition) {
         a = Math.floor(Math.random() * 6);
         b = Math.floor(Math.random() * 6);
@@ -19,7 +18,7 @@ const generateMathQuestions = (): Question[] => {
         b = Math.floor(Math.random() * (a + 1));
         result = a - b;
       }
-    } else if (i < 7) { // Trung bình
+    } else if (i < 7) {
       if (isAddition) {
         a = Math.floor(Math.random() * 10) + 1;
         b = Math.floor(Math.random() * 10);
@@ -29,7 +28,7 @@ const generateMathQuestions = (): Question[] => {
         b = Math.floor(Math.random() * (a - 1)) + 1;
         result = a - b;
       }
-    } else { // Khó (lên đến 20)
+    } else {
       if (isAddition) {
         a = Math.floor(Math.random() * 11) + 5;
         b = Math.floor(Math.random() * (21 - a));
@@ -41,10 +40,8 @@ const generateMathQuestions = (): Question[] => {
       }
     }
 
-    if (result > 20) result = 20;
-    if (result < 0) result = 0;
-
     const problem = isAddition ? `${a} + ${b} = ?` : `${a} - ${b} = ?`;
+    const solvedProblem = isAddition ? `${a} + ${b} = ${result}` : `${a} - ${b} = ${result}`;
     
     const optionsSet = new Set<number>([result]);
     while (optionsSet.size < 4) {
@@ -55,10 +52,11 @@ const generateMathQuestions = (): Question[] => {
     qs.push({
       id: i,
       problem,
+      solvedProblem, // New property for showing result
       answer: result,
       options: Array.from(optionsSet).sort((x, y) => x - y),
       type: GameType.MATH
-    });
+    } as any);
   }
   return qs;
 };
@@ -68,48 +66,42 @@ interface MathGameProps {
 }
 
 const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [feedback, setFeedback] = useState<string>('');
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
   useEffect(() => {
     setQuestions(generateMathQuestions());
   }, []);
 
-  const handleAnswer = async (answer: number) => {
-    if (showFeedback) return;
-    const currentQ = questions[currentIndex];
-    if (!currentQ) return;
+  const handleAnswer = (answer: number) => {
+    if (showResult) return;
+    setSelectedAnswer(answer);
+    if (answer === questions[currentIndex].answer) {
+      setScore(prev => prev + 1);
+    }
+    setShowResult(true);
+  };
 
-    const correct = answer === currentQ.answer;
-    
-    setIsCorrect(correct);
-    if (correct) setScore(prev => prev + 1);
-
-    setShowFeedback(true);
-    const msg = await getEncouragement(correct, score + (correct ? 1 : 0));
-    setFeedback(msg);
-
-    setTimeout(() => {
-      setShowFeedback(false);
-      if (currentIndex < 9) {
-        setCurrentIndex(prev => prev + 1);
-      } else {
-        onFinish(score + (correct ? 1 : 0));
-      }
-    }, 2000);
+  const handleNext = () => {
+    setShowResult(false);
+    setSelectedAnswer(null);
+    if (currentIndex < 9) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      onFinish(score);
+    }
   };
 
   const currentQuestion = questions[currentIndex];
 
   if (questions.length === 0 || !currentQuestion) {
     return (
-      <div className="flex flex-col items-center justify-center p-10 space-y-4">
+      <div className="flex flex-col items-center justify-center p-10 space-y-4 text-center">
         <div className="animate-spin text-5xl">🌟</div>
-        <p className="font-kids text-xl text-slate-500">Đang chuẩn bị thử thách...</p>
+        <p className="font-kids text-xl text-slate-500">Đang chuẩn bị...</p>
       </div>
     );
   }
@@ -123,45 +115,53 @@ const MathGame: React.FC<MathGameProps> = ({ onFinish }) => {
         ></div>
       </div>
 
-      <div className="text-center mb-10">
-        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Câu hỏi {currentIndex + 1} trên 10</p>
-        <h2 className="text-5xl md:text-7xl font-kids text-slate-800 animate-bounce-slow">
-          {currentQuestion.problem}
+      <div className="text-center mb-8 h-32 flex flex-col justify-center">
+        <p className="text-slate-400 font-bold uppercase tracking-wider mb-2">Câu {currentIndex + 1}/10</p>
+        <h2 className={`font-kids transition-all duration-300 ${showResult ? 'text-6xl md:text-8xl text-blue-600' : 'text-5xl md:text-7xl text-slate-800'}`}>
+          {showResult ? currentQuestion.solvedProblem : currentQuestion.problem}
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 w-full">
-        {currentQuestion.options.map((option, idx) => (
-          <button
-            key={idx}
-            disabled={showFeedback}
-            onClick={() => handleAnswer(option as number)}
-            className={`
-              h-24 md:h-32 text-3xl md:text-4xl font-kids rounded-3xl transition-all active:scale-95 border-b-8
-              ${showFeedback ? 'opacity-50' : 'hover:-translate-y-1'}
-              ${idx === 0 ? 'bg-blue-400 text-white border-blue-600' : ''}
-              ${idx === 1 ? 'bg-orange-400 text-white border-orange-600' : ''}
-              ${idx === 2 ? 'bg-pink-400 text-white border-pink-600' : ''}
-              ${idx === 3 ? 'bg-purple-400 text-white border-purple-600' : ''}
-            `}
-          >
-            {option}
-          </button>
-        ))}
+      <div className="grid grid-cols-2 gap-4 w-full mb-8">
+        {currentQuestion.options.map((option: number, idx: number) => {
+          const isCorrect = option === currentQuestion.answer;
+          const isSelected = option === selectedAnswer;
+          
+          let btnClass = "bg-slate-100 text-slate-700 border-slate-300";
+          if (showResult) {
+            if (isCorrect) btnClass = "bg-green-500 text-white border-green-700 scale-105 z-10";
+            else if (isSelected) btnClass = "bg-red-400 text-white border-red-600 opacity-70";
+            else btnClass = "bg-slate-50 text-slate-300 border-slate-200 opacity-30";
+          } else {
+            const colors = ['bg-blue-400 border-blue-600', 'bg-orange-400 border-orange-600', 'bg-pink-400 border-pink-600', 'bg-purple-400 border-purple-600'];
+            btnClass = `${colors[idx % colors.length]} text-white`;
+          }
+
+          return (
+            <button
+              key={idx}
+              disabled={showResult}
+              onClick={() => handleAnswer(option)}
+              className={`
+                h-24 md:h-32 text-4xl md:text-5xl font-kids rounded-3xl transition-all border-b-8
+                ${!showResult ? 'hover:-translate-y-1 active:scale-95' : ''}
+                ${btnClass}
+              `}
+            >
+              {option}
+            </button>
+          );
+        })}
       </div>
 
-      {showFeedback && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50 animate-in fade-in zoom-in duration-300">
-          <div className={`
-            p-10 rounded-full text-center max-w-xs shadow-2xl border-4
-            ${isCorrect ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}
-          `}>
-            <p className="text-2xl font-kids text-slate-800">
-              {feedback || (isCorrect ? "Tuyệt vời! 🌟" : "Cố lên nào! 🌈")}
-            </p>
-          </div>
-        </div>
-      )}
+      <div className={`h-24 flex items-center justify-center transition-all duration-300 ${showResult ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'}`}>
+        <button
+          onClick={handleNext}
+          className="w-24 h-24 bg-yellow-400 hover:bg-yellow-300 text-white rounded-full flex items-center justify-center text-5xl shadow-xl border-b-8 border-yellow-600 active:scale-95 transition-all"
+        >
+          ➔
+        </button>
+      </div>
     </div>
   );
 };
